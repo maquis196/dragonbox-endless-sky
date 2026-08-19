@@ -1,0 +1,56 @@
+FROM arm32v7/debian:12
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        libsdl2-dev \
+	ca-certificates \
+        cmake \
+        wget \
+	g++ \
+	fluid \ 
+        squashfs-tools \
+        zip \
+	libfltk1.3-dev \ 
+	libfltk-images1.3 \
+	pkg-config \
+	libssl-dev \
+        ninja-build \
+	libsdl2-dev \
+	libpng-dev \
+	libjpeg-dev \
+	libavif-dev \
+	libgl1-mesa-dev \
+	libglew-dev \
+	libminizip-dev \
+	libopenal-dev \
+	libmad0-dev \
+	libflac++-dev \
+	uuid-dev \
+	pkgconf \
+    && rm -rf /var/lib/apt/lists/*
+
+## Install rustup + stable toolchain non-interactively
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
+    sh -s -- -y --default-toolchain stable --profile minimal
+
+# Make cargo/rustc available
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Force sparse index (important)
+ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
+
+# Optional but useful: write the config permanently
+RUN mkdir -p /root/.cargo && \
+    printf '[registries.crates-io]\nprotocol = "sparse"\n' > /root/.cargo/config.toml
+
+RUN g++ --version && \
+    cmake --version && \
+    cargo --version && \
+    rustc --version
+
+WORKDIR /src
+
+CMD ["/bin/bash"]

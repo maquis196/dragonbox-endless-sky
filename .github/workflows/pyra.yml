@@ -1,0 +1,38 @@
+name: Build Pyra package
+
+on:
+  push:
+    tags:
+      - '*-r*'
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+
+    env:
+      VERSION: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --platform linux/arm/v7 \
+            -f Dockerfile.pyra \
+            -t pyra-builder .
+
+      - name: Build DBP
+        run: |
+          docker run --rm \
+            --platform linux/arm/v7 \
+            -v "$PWD:/src" \
+            pyra-builder \
+            /bin/bash -c "/src/local_build_dbp.sh '$VERSION'"
+
+      - name: Upload DBP
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyra-${{ env.VERSION }}
+          path: '*.dbp'
