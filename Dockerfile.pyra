@@ -30,6 +30,7 @@ RUN apt-get update && \
 	libflac++-dev \
 	uuid-dev \
 	pkgconf \
+	catch2 \
     && rm -rf /var/lib/apt/lists/*
 
 ## Install rustup + stable toolchain non-interactively
