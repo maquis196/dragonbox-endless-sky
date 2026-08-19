@@ -18,8 +18,8 @@ tar zxpvf v${UPSTREAM_VERSION}.tar.gz
 cd endless-sky-${UPSTREAM_VERSION}
 
 # Build # Set options
-cmake .
-make -j2
+cmake --preset linux
+cmake --build --preset linux-debug --target EndlessSky
 
 ## Configure meta file
 cat > assets/meta/default.desktop <<EOF
