@@ -18,8 +18,9 @@ tar zxpvf v${UPSTREAM_VERSION}.tar.gz
 cd endless-sky-${UPSTREAM_VERSION}
 
 # Build # Set options
-cmake --preset linux
-cmake --build --preset linux-debug --target EndlessSky
+cmake --preset linux-gles -DCMAKE_INSTALL_PREFIX=./gamedata
+cmake --build --preset linux-glex-release --target EndlessSky
+cmake --install build/linux-gles
 
 ## Configure meta file
 cat > assets/meta/default.desktop <<EOF
@@ -29,8 +30,8 @@ Type=Application
 Categories=Game;Strategy;
 Name=Endless Sky
 Exec=endless_sky.sh
-Icon=icon.jpg
-X-DBP-Screenshot=teaser1.jpg
+Icon=icon_32x32.png
+X-DBP-Screenshot=teaser1.png
 
 [Package Entry]
 Id=endless_sky_maquis196
@@ -38,7 +39,7 @@ Name=Endless Sky
 Arch=armhf
 Exec=endless_sky.sh
 Version=${VERSION}
-Icon=icon.jpg
+Icon=WinApp.ico
 EOF
 
 rm -f data.zip gamedata.sqfs
